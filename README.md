@@ -10,7 +10,7 @@
 
 我自己使用2015年开始接触React，并在2016年在改造一个现有的小型项目的时候将React引入。目前React给我的感觉就是我无需关心界面怎么交互更新，我只需要控制更新State数据至于界面React这个小伙子会替我做好的。在本案例中我将为大家展示一个点单界面，改造之前是使用jQuery的，因为交互逻辑比较多在jQuery时DOM操作过于复杂，所以在遇到React后将其进行了改造。改造的界面如下：
 
-![界面展示](/react-example/img/panel.png)
+![界面展示](http://blog.403studio.com/react-example/img/panel.png)
 
 ## 准备工作
 

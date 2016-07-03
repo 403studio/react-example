@@ -1,0 +1,28 @@
+{
+  "name": "403studio-react-example",
+  "version": "1.0.0",
+  "description": "React examples",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/403studio/react-example.git"
+  },
+  "keywords": [
+    "react",
+    "example"
+  ],
+  "author": "hao.huang <hao.huang@aliyun.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/403studio/react-example/issues"
+  },
+  "homepage": "https://github.com/403studio/react-example#readme",
+  "dependencies": {
+    "babel-preset-react": "^6.11.1",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0"
+  }
+}

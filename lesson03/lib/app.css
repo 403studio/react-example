@@ -1,0 +1,19 @@
+.row div.block {
+    margin: 8px 0;
+}
+#category-list .btn, #flag-list .btn, #order-detail-container .btn, #goods-list .btn {
+    margin-left: 8px;
+}
+#goods-list .goods-detail {
+    width: 100px;
+    height: 100px;
+}
+.order-goods-detail {
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 4px;
+}
+.btn-tiny {
+    padding: 2px 5px;
+    font-size: 10px;
+    border-radius: 3px;
+}

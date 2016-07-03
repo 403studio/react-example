@@ -1,3 +1,10 @@
+## 使用说明
+
+本实例的代码同步部署在[GitHub](https://github.com/403studio/react-example),我本人在编写代码时是使用的NPM，但node_modules因为文件较多，没有上传。
+
+* 使用Node的用户可以迁出代码，直接运行`npm install`则可创建好需要的node_modules
+* 为方便起见也可以不使用npm的方式来安装使用React，只需要将主文件index.html对react.js和react-dom.js的引用修改到你自己的地址（官网可以下载或者使用在线CDN）
+
 ## React介绍和Web前端开发的几次变革
 
 [React][React]是Facebook开源的一款构建用户交互界面的Javascript库，自发布以来改变了很多开发者对前端开发的理解。在React取得成功后又发布了React Native用于构建统一跨平台的原生应用。笔者从2009年参加工作算是经历的Web前端的几次变革：

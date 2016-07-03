@@ -45,3 +45,8 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+/lesson01/node_modules
+/lesson02/node_modules
+/lesson03/node_modules
+/lesson04/node_modules

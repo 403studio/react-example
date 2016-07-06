@@ -1,21 +1,30 @@
 var OrderDetailContainer = React.createClass({
 	render: function() {
+		var orderGoodsNode = this.props.orderGoods.map(function(goods) {
+			var flagNode = goods.flag.map(function(flag) {
+				if (flag.checked) {
+					return (<small key={flag.key} className="btn btn-tiny btn-warning">{flag.value}</small>);
+				}
+			});
+			return (
+				<div className="row order-goods-detail" key={goods.key} >
+					<div className="col-md-4">{goods.goods_name}</div>
+					<div className="col-md-2">1</div>
+					<div className="col-md-3">{goods.price}</div>
+					<div className="col-md-3">{goods.price * goods.number}</div>
+					<div className="col-md-12 text-right">
+						{flagNode}
+					</div>
+				</div>
+			);
+		}.bind(this));
+
 		return (
 			<div className="col-md-4">
 				<div className="panel panel-default">
 					<div className="panel-heading">订单明细</div>
 					<div className="panel-body" id="order-detail-container">
-						<div className="row order-goods-detail">
-							<div className="col-md-4">深深乌龙</div>
-							<div className="col-md-2">1</div>
-							<div className="col-md-3">12</div>
-							<div className="col-md-3">12.00</div>
-							<div className="col-md-12 text-right">
-								<small className="btn btn-tiny btn-warning">加冰</small>
-								<small className="btn btn-tiny btn-warning">常温</small>
-							</div>
-						</div>
-
+						{orderGoodsNode}
 						<div className="row">
 							<div className="col-md-12 text-right">
 								合计:32.00
@@ -37,8 +46,8 @@ var GoodsContainer = React.createClass({
 		return (
 			<div className="col-md-8">
 				<CategoryList onCategoryClick={this.props.onCategoryClick} category={this.props.category}  />
-				<FlagList flag={this.props.flag} />
-				<GoodsList filterCategory={this.props.filterCategory} goods={this.props.goods} />
+				<FlagList onFlagClick={this.props.onFlagClick} flag={this.props.flag} />
+				<GoodsList onGoodsClick={this.props.onGoodsClick} filterCategory={this.props.filterCategory} goods={this.props.goods} />
 			</div>
 		);
 	}
@@ -66,10 +75,26 @@ var CategoryList = React.createClass({
 });
 
 var FlagList = React.createClass({
+	onClick: function(e) {
+		var nodeName = e.target.nodeName;
+		var divNode = e.target;
+		if (nodeName == "SPAN") {
+			divNode = e.target.parentNode;
+		}
+		var key = divNode.getAttribute("data-key");
+		this.props.onFlagClick(key);
+	},
+
 	render: function() {
 		var flagNode = this.props.flag.map(function(flag) {
-			return (<span key={flag.key} className="btn btn-sm btn-warning">{flag.value}</span>);
-		});
+			var spanStyle = flag.checked ? {display: "inline"} : {display: "none"};
+			return (
+				<div className="btn btn-sm btn-warning" data-key={flag.key} key={flag.key} onClick={this.onClick}>
+					<span>{flag.value}</span>
+					<span style={spanStyle} className="text-success glyphicon glyphicon-ok"></span>
+				</div>
+			);
+		}.bind(this));
 		return (
 			<div className="col-md-12 block" id="flag-list">
 				{flagNode}
@@ -79,12 +104,22 @@ var FlagList = React.createClass({
 });
 
 var GoodsList = React.createClass({
+	onClick: function(e) {
+		var nodeName = e.target.nodeName;
+		var divNode = e.target;
+		if (nodeName == "SPAN") {
+			divNode = e.target.parentNode;
+		}
+		var goods_id = divNode.getAttribute("data-id");
+		this.props.onGoodsClick(goods_id);
+	},
+
 	render: function() {
 		var goodsNode = this.props.goods.map(function(goods) {
 			var filterCategory = this.props.filterCategory;
 			if (filterCategory != 0 && filterCategory != goods.category_id) {return}
 			return (
-				<div key={goods.id} className="goods-detail btn btn-default">
+				<div onClick={this.onClick} data-id={goods.id} key={goods.id} className="goods-detail btn btn-default">
 					<span>{goods.goods_name}</span>
 				</div>
 			);
@@ -112,11 +147,12 @@ var OrderBox = React.createClass({
 				{id: "2", parent_id: "0", category_name: "咖啡", open: "0"}
 			], 
 			flag: [
-				{key: 1, value: "常温"}, 
-				{key: 2, value: "加冰"},
-				{key: 3, value: "加热"}
+				{key: 1, value: "常温", checked: false}, 
+				{key: 2, value: "加冰", checked: false},
+				{key: 3, value: "加热", checked: false}
 			],
 			filterCategory: 0,
+			orderGoods: [],
 		}
 	},
 
@@ -141,11 +177,52 @@ var OrderBox = React.createClass({
 		this.setState({filterCategory: category_id});
 	},
 
+	handleGoodsClick: function(goods_id) {
+		var goodsClick = this.state.goods.find(function(value, index, arr) {
+			return (value.id == goods_id);
+		});
+		var orderGoods = this.state.orderGoods;
+		var time = (new Date()).getTime();
+		var flag = this.state.flag.filter(function(flag) {
+			return (flag.checked === true);
+		});
+		var flagNew = flag.map(function(flag) {
+			return ({key: flag.key, value: flag.value, checked: flag.checked})
+		});
+
+		var orderGoodsNew = {
+			key: time, 
+			id: goodsClick.id,
+			goods_name: goodsClick.goods_name,
+			barcode: goodsClick.barcode,
+			plucode: goodsClick.plucode,
+			category_id: goodsClick.category_id,
+			category_name: goodsClick.category_name,
+			price: goodsClick.price,
+			unit: goodsClick.unit,
+			number: 1,
+			flag: flagNew,
+		};
+		this.setState({orderGoods: orderGoods.concat(orderGoodsNew)});
+		this.state.flag.forEach(function(flag) {
+			flag.checked = false;
+		});
+	},
+
+	handleFlagClick: function(key) {
+		var flag = this.state.flag;
+		var flagClick = flag.find(function(value, index, arr) {
+			return (value.key == key);
+		});
+		flagClick.checked = !flagClick.checked;
+		this.setState({flag: flag});
+	},
+
 	render: function() {
 		return (
 			<div className="row">
-				<OrderDetailContainer />
-				<GoodsContainer onCategoryClick={this.handleCategoryClick} filterCategory={this.state.filterCategory} goods={this.state.goods} category={this.state.category} flag={this.state.flag} />
+				<OrderDetailContainer orderGoods={this.state.orderGoods} />
+				<GoodsContainer onFlagClick={this.handleFlagClick} onGoodsClick={this.handleGoodsClick} onCategoryClick={this.handleCategoryClick} filterCategory={this.state.filterCategory} goods={this.state.goods} category={this.state.category} flag={this.state.flag} />
 			</div>
 		);
 	}
